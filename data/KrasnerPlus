@@ -1,0 +1,20 @@
+0 for Integers
+globalTShift: 0, BoundarySize: 4, Complex size: 3
+First Vector:  Size 1, First Tangle: qShift 1 + (-1)*N, 0 circles, Data 1 0 3 2, DeloopStack 0
+Second Vector: Size 1, First Tangle: qShift -1 + (-1)*N, 0 circles, Data 1 0 3 2, DeloopStack 0
+Third Vector:  Size 1, First Tangle: qShift 0 + (-2) * N, 0 circles, Data 3 2 1 0, DeloopStack 0
+First Matrix:  1 Col, 1 Entry
+	The entry: LCCobos of size 2
+		Cobo coefficient -1, Size 2, Dots 0 1
+		Cobo coefficient 1, Size 2, Dots 1 0
+	ColInd: 0
+	RowPtrSize: 2
+	Row Pointers: 0, 1
+	0 Invertibles
+Second Matrix: 1 Col, 1 Entry
+	The entry: LCCobos of size 1
+		Cobo coefficient 1, Size 1, Dots 0
+	ColInd: 0
+	RowPtrSize: 2
+	Row Pointers: 0, 1
+	0 Invertibles

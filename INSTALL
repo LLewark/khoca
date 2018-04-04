@@ -1,0 +1,36 @@
+If you downloaded binaries, the only slightly exotic library that needs to be
+present on your system is libpython3.6m.so.1.0.
+
+This file gives some instructions on how to compile khoca from source. You are
+welcome to email me at <lukas@lewark.de> for help.
+You will need:
+* a version of gcc that supports c++11.
+* cython.
+* mpir, compiled with c++ support.
+* gp/pari.
+* python3
+
+If your python version is not 3.6, change the variable PYTHONVERSION in the
+make file accordingly.  If you installed the above-mentioned libraries to a
+non-standard location, you might need to add an -I parameter to GENERALCFLAGS,
+or an -L parameter to STATIC_DIRECTIVE. Then, run make. This should produce the
+file bin/pui.so. Compilation may take quite a while. If you encounter problems,
+you may wish to uncomment the two lines after "Fast compile" in the Makefile,
+and comment out the two lines after "Not Debugging". Also, you can delete lines
+81 - 93 in src/shared.h. These measures will lead to faster compilation.
+
+Now you are set! Run
+
+./khoca.py 0 0.0 0 braidaaa calc0
+
+to test. The output should be:
+
+Frobenius algebra: Z[X] / (1*X^2).
+Result:
+Reduced Homology:
+Non-equivariant homology:
+t^-3q^8 + t^-2q^6 + t^0q^2
+Unreduced Homology:
+Non-equivariant homology:
+t^-3q^9 + t^-2q^5 + t^0q^1 + t^0q^3 + t^-2q^7[2]
+
