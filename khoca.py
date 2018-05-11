@@ -308,6 +308,7 @@ def run_commandline(argv, printCommand, progress):
                 idxTranslator += [shift]
             elif i[:2].capitalize() == "Pd":
                 l = getInts(i, False)
+                l = [x - 1 for x in l]
                 mypd = reducePD(pd_to_mypd([list(j) for j in zip(*[iter(l)]*4)]))
                 print(mypd)
                 shift += calcIt(mypd, shift)
