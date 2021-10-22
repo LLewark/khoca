@@ -1,0 +1,37 @@
+# This workflow runs tests to build Khoca on verois systems
+
+name: Run Tests
+
+# Triggers the workflow on push or pull request events and manually
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  # This workflow contains one job called build
+  build:
+    name: Build Khoca
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE, so our job can access it
+      - name: Checkout code
+        id: checkout_code
+        uses: actions/checkout@v2
+
+      # Installs dependencies
+      - name: Install Dependencies
+        id: dependencies
+        run: |
+            sudo apt-get update -y
+            sudo apt-get install -y make g++ python3 python3-pip libgmp-dev pari-gp2c
+            pip3 install cython
+
+      # Building Khoca
+      - name: Make
+        id: make
+        run: make
+
+      # Run a Test (should result to 1)
+      - name: Run Test
+        id: run_test
+        run: |
+          ./khoca.py 0 0.0 0 braidaBaB calc0 | grep -c "t^-2q^4 + t^-1q^2 + t^0q^0 + t^1q^-2 + t^2q^-4"

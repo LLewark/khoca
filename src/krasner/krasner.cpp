@@ -32,7 +32,7 @@
 #include <algorithm>
 // Next line is necessary because of mpir
 #include <stddef.h>
-#include <mpir.h>
+#include <gmp.h>
 #include <fstream>
 
 #include "../shared.h"

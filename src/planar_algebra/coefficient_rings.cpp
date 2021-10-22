@@ -21,7 +21,7 @@
 
 #include <array>
 #include <stddef.h>
-#include <mpir.h>
+#include <gmp.h>
 #include <cstdint>
 #include <vector>
 #include <fstream>

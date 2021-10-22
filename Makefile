@@ -1,11 +1,11 @@
 CC=g++
-PYTHONVERSION=3.6
-GENERALCFLAGS=-c -std=c++11 -I/usr/include/python$(PYTHONVERSION)m -D__STDC_LIMIT_MACROS -Wall -Wextra -march=native
+PYTHONVERSION=3.8
+GENERALCFLAGS=-c -std=c++11 -I/usr/include/python$(PYTHONVERSION) -D__STDC_LIMIT_MACROS -Wall -Wextra -march=native
 
-STATIC_DIRECTIVE=-lpython$(PYTHONVERSION)m -lmpirxx -lmpir -L/usr/local/lib -lpari
+STATIC_DIRECTIVE=-lpython$(PYTHONVERSION) -lgmpxx -lgmp -L/usr/local/lib -lpari
 # To compile a version of the library that contains static copies of mpir and pari, set variable STATIC to 1.
 ifeq ($(STATIC),1)
-  STATIC_DIRECTIVE=-Wl,--no-as-needed -ldl -lutil -static-libgcc -lpython$(PYTHONVERSION)m -L/usr/local/lib /usr/local/lib/libmpirxx.a /usr/local/lib/libmpir.a /usr/local/lib/libpari.a
+  STATIC_DIRECTIVE=-Wl,--no-as-needed -ldl -lutil -static-libgcc -lpython$(PYTHONVERSION) -L/usr/local/lib /usr/local/lib/libmpirxx.a /usr/local/lib/libmpir.a /usr/local/lib/libpari.a
 endif
 
 CFLAGSPYXO=-Wno-write-strings -Wimplicit-fallthrough=0 -fno-strict-aliasing -fwrapv -pthread
@@ -32,7 +32,7 @@ CFLAGS=$(GENERALCFLAGS) $(SHAREDCFLAGS) -O3 -fopenmp
 COMPILERFLAGSINFO=\"Release\"
 
 CMPIRFLAGS=-I/usr/local/include
-LDFLAGS=$(STATIC_DIRECTIVE) $(SHAREDCFLAGS) -z defs -lpthread -lstdc++
+LDFLAGS=$(STATIC_DIRECTIVE) $(SHAREDCFLAGS) -z defs -lpthread -lstdc++ -Wl,-t
 
 PYX=src/python_interface/pui.pyx
 PYXCPP=src/python_interface/pui.cpp

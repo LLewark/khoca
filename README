@@ -38,6 +38,17 @@ The source code, including instructions on how to compile it, is available at
 the GitHub repository khoca:
 https://github.com/LLewark/khoca
 
+To run Khoca in Docker type:
+
+docker run -it soehms/khoca:1.0
+
+Its download size is 162 MB and it will need 516 MB of disk space on your
+device. To create a new (resp. locally own) Docker image cd to the khoca
+directory type
+
+docker build -f docker/Dockerfile --tag khoca .
+
+
 Usage
 -----
 
