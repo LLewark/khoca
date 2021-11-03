@@ -1,6 +1,6 @@
 CC=g++
-PYTHONVERSION=3.8
-GENERALCFLAGS=-c -std=c++11 -I/usr/include/python$(PYTHONVERSION) -D__STDC_LIMIT_MACROS -Wall -Wextra -march=native
+PYTHONVERSION=$(shell python -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
+GENERALCFLAGS=-c -std=c++11 -I/usr/include/python$(PYTHONVERSION) -D__STDC_LIMIT_MACROS -Wall -Wextra
 
 STATIC_DIRECTIVE=-lpython$(PYTHONVERSION) -lgmpxx -lgmp -L/usr/local/lib -lpari
 # To compile a version of the library that contains static copies of mpir and pari, set variable STATIC to 1.
