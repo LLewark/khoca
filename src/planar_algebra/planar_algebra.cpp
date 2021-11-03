@@ -113,14 +113,14 @@ VecTangles<tangle_tpl> VecTangles<tangle_tpl>::setToDual(
     dual.tangles.reserve(other.tangles.size());
     for (auto i = other.tangles.begin(); i != other.tangles.end(); ++i)
         dual.tangles.push_back(std::move(Tangle<tangle_tpl>::setToDual(*i)));
-    return std::move(dual);
+    return dual;
 }
 
 template <class tangle_tpl>
 tangle_tpl Tangle<tangle_tpl>::setToDual(const tangle_tpl &other) {
     tangle_tpl dual = other;
     dual.qShift *= -1;
-    return std::move(dual);
+    return dual;
 }
 
 template <class cobordism_tpl>
@@ -130,7 +130,7 @@ MatLCCobos<cobordism_tpl> MatLCCobos<cobordism_tpl>::setToDual(
     
     dual.morphisms = std::move(SparseMat<LCCobos<cobordism_tpl> >::setToDual(
                 other.morphisms));
-    return std::move(dual);
+    return dual;
 }
 
 template <class cobordism_tpl>

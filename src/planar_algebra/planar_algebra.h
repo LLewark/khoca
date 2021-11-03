@@ -511,7 +511,7 @@ class MatLCCobos {
         constIterator_t getConstIterator() const {
             constIterator_t x;
             x.setToMatBegin(this->morphisms);
-            return std::move(x);
+            return x;
         }
         void glue(const boundary_t gluePoints[2],
                 const VecTangles<typename cobordism_tpl::tangle_t> &lowerVec,

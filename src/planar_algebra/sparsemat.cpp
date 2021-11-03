@@ -126,7 +126,7 @@ SparseMat<entry_tpl> SparseMat<entry_tpl>::setToDual(
         if (isInvertible.at(*i))
             dual.invertibles.push_back(i - newIdxToOld.begin());
     }
-    return std::move(dual);
+    return dual;
 }
 
 template <class entry_tpl>
