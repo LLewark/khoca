@@ -42,7 +42,7 @@ Everything can be multithreaded (in the future).
 #include <algorithm>
 // stddef.h included for mpir
 #include <stddef.h>
-#include <mpir.h>
+#include <gmp.h>
 #include <fstream>
 #include <math.h>
 

@@ -32,7 +32,7 @@
 #include <algorithm>
 // Next line is necessary due to a bug of mpir
 #include <stddef.h>
-#include <mpir.h>
+#include <gmp.h>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
