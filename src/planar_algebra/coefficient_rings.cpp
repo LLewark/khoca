@@ -414,7 +414,7 @@ void MInteger::operator=(MInteger &&other){
 }
 
 void MInteger::inv(){
-    // Inverse integers (namely +-1) are self-inverse.
+    // Invertible integers (namely +-1) are self-inverse.
 }
 
 void MInteger::switchSign(){
