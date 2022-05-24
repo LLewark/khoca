@@ -46,10 +46,19 @@ NUM_THREADS = 1 if debugging else 12
 def pd_to_mypd(pd):
     result = list()
     for i in pd:
-        if (i[3] == ((i[1] + 1) % (2 * len(pd)))):
-            result.append([2,i[0] - 1,i[1] - 1,i[2] - 1,i[3] - 1])
+        # If they are consecutive, we orient them ascending.
+        if abs(i[3] - i[1]) == 1:
+            if i[3] == i[1] + 1:
+                result.append([2,i[0] - 1,i[1] - 1,i[2] - 1,i[3] - 1])
+            else:
+                result.append([3,i[1] - 1,i[2] - 1,i[3] - 1,i[0] - 1])
+        # Now we have to assume that they form the looping end of a component in a link diagram.
+        # Which means they should be oriented descending.
         else:
-            result.append([3,i[1] - 1,i[2] - 1,i[3] - 1,i[0] - 1])
+            if i[3] < i[1]:
+                result.append([2,i[0] - 1,i[1] - 1,i[2] - 1,i[3] - 1])
+            else:
+                result.append([3,i[1] - 1,i[2] - 1,i[3] - 1,i[0] - 1])
     return result
 
 def generate_binary_tree(length, s = 0):
