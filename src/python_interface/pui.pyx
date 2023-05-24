@@ -59,6 +59,28 @@ cdef extern from "pythonInterface.h":
 cdef ComplexStack* stack = NULL
 cdef unsigned short globalMod
 
+cdef class PyComplexStack(object):
+	r"""
+	Python wrapper for cpp class ComplexStack.
+	"""
+	cdef ComplexStack* former_stack
+
+	def __enter__(self):
+		r"""
+		Reset the global ``ComplexStack``.
+		"""
+		global stack
+		self.former_stack = stack
+		stack = NULL
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		r"""
+		Delete current global ``ComplexStack`` and restore former stack.
+		"""
+		global stack
+		del stack
+		stack = self.former_stack
+
 def pPrintCompileInfo():
 	global stack
 	stack.printCompileInfo()
@@ -199,6 +221,7 @@ def pCalculateHomology(idx, nice, num_threads, printCommand, printEquivariant, p
 			if (not higherPageExists):
 				printCommand("The spectral sequence collapses on the first page.\n")
 			stack.resetPage()
+	return eval(s)
 
 def pSum(target, idx1, idx2, num_threads, progress):
 	global stack
@@ -242,14 +265,23 @@ def pCalcSubTangleTree(s, num_threads, progress):
 def loadType(idx, typeIdx):
 	global stack
 	cdef string s
+	data_dir = 'data'
+	from os import path
+	try:
+		import khoca
+		data_dir = path.join(path.dirname(khoca.__file__), data_dir)
+	except ImportError:
+		pass
+
+	encode = 'utf-8'
 	if (typeIdx == 0):
-		s = b"data/KrasnerPlus.bin"
+		s = bytes(path.join(data_dir, 'KrasnerPlus.bin'), encode)
 	elif (typeIdx == 1):
-		s = b'data/KrasnerMinus.bin'
+		s = bytes(path.join(data_dir, 'KrasnerMinus.bin'), encode)
 	elif (typeIdx == 2):
-		s = b'data/KhovanovPlus.bin'
+		s = bytes(path.join(data_dir, 'KhovanovPlus.bin'), encode)
 	elif (typeIdx == 3):
-		s = b'data/KhovanovMinus.bin'
+		s = bytes(path.join(data_dir, 'KhovanovMinus.bin'), encode)
 	else:
 		print("Unknown type: " + str(typeIdx))
 		sys.exit()

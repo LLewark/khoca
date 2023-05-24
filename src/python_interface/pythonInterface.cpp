@@ -192,6 +192,7 @@ void ComplexStack::outputTotalSize() const {
 #endif
 
 ComplexStack::~ComplexStack() {
+    delete ((AbstractComplex*)tokenComplex);
     for (auto i = complexStack.begin(); i != complexStack.end(); ++i)
         deleteComplex(i - complexStack.begin());
 }

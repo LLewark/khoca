@@ -26,18 +26,54 @@
 import sys
 sys.path.insert(0, './bin/')
 
-from pui import pCalcSubTangleTree, pCalculateHomology, pGlueReduced, pCopyHomology, pFirstFreeIdx, pSaveComplexToFile, pDeleteComplex, pLoadComplexFromFile, pSum, pDual, pDeleteNonIsos, pResetSimplificationsCounter, pReducify, pIniStack, pSetRoot, pPrintHomology, pPrintCompileInfo, pCalculateEquiHomology
+import os
+
+def interactive():
+    r"""
+    Checks if the module is used as part of :class:`InteractiveCalculator`.
+    """
+    head, tail = os.path.split(__file__)
+    if not head:
+        return False
+    head, tail = os.path.split(head)
+    if tail == 'khoca':
+        return True
+    else:
+        return False
+
+def run_command_exit(print_command, err_mess):
+    r"""
+    Exit :func:`run_command_line` on error.
+    """
+    if interactive():
+        raise ValueError(err_mess)
+    else:
+        print_command(err_mess)
+        sys.exit()
+
+def set_options(verbose_mode, progress_mode):
+    r"""
+    Set the global options ``verbose`` and ``progress``.
+    """
+    global verbose, progress
+    verbose = verbose_mode
+    progress = progress_mode
+
 import random
 import re
 import math
 
 sys.path.append('.')
-import KrasnerGaussToMyPDLib, pseudoBraidToKrasnerGaussLib, BraidToMyPD
+if interactive():
+    from khoca.bin.pui import pCalcSubTangleTree, pCalculateHomology, pGlueReduced, pCopyHomology, pFirstFreeIdx, pSaveComplexToFile, pDeleteComplex, pLoadComplexFromFile, pSum, pDual, pDeleteNonIsos, pResetSimplificationsCounter, pReducify, pIniStack, pSetRoot, pPrintHomology, pPrintCompileInfo, pCalculateEquiHomology
+    from khoca.bin import KrasnerGaussToMyPDLib, pseudoBraidToKrasnerGaussLib, BraidToMyPD
+else:
+    from pui import pCalcSubTangleTree, pCalculateHomology, pGlueReduced, pCopyHomology, pFirstFreeIdx, pSaveComplexToFile, pDeleteComplex, pLoadComplexFromFile, pSum, pDual, pDeleteNonIsos, pResetSimplificationsCounter, pReducify, pIniStack, pSetRoot, pPrintHomology, pPrintCompileInfo, pCalculateEquiHomology
+    import KrasnerGaussToMyPDLib, pseudoBraidToKrasnerGaussLib, BraidToMyPD
 
 
 debugging = False
 NUM_THREADS = 1 if debugging else 12
-
 
 
 ## Converts a link diagram given in the Planar-diagram notation to the mypd format.
@@ -276,12 +312,12 @@ def run_commandline(argv, printCommand, progress):
         # doing the work
         shift = 0
         idxTranslator = [0]
+        res = []
         for i in argv[(NUM_ARGUMENTS + 1):]:
             if i[:3].capitalize() == "Nat":
                 l = getInts(i, False)
                 if (len(l) % 5 != 0) or (len(l) == 0):
-                    printCommand("The native code (\"" + i[3:] +  "\") following the command \"nat\" must be a non-empty list of integers whose length is divisible by five.")
-                    sys.exit()
+                    run_command_exit(printCommand, "The native code (\"" + i[3:] +  "\") following the command \"nat\" must be a non-empty list of integers whose length is divisible by five.")
         
                 mypd = [list(j) for j in zip(*[iter(l)]*5)]
                 mypd = reducePD(mypd)
@@ -316,8 +352,7 @@ def run_commandline(argv, printCommand, progress):
             elif i[:10].capitalize() == "Calcnonred":
                 l = getInts(i, False)
                 if (len(l) != 1):
-                    printCommand("\"Calcnonred\" must be followed by exactly one unsigned integer.")
-                    sys.exit()
+                    run_command_exit(printCommand, "\"Calcnonred\" must be followed by exactly one unsigned integer.")
                 idx = idxTranslator[l[0]]
                 firstFreeIdx = shift
                 shift += 1
@@ -327,14 +362,14 @@ def run_commandline(argv, printCommand, progress):
                 printCommand("Result:")
                 printCommand("Unreduced Homology:")
                 pGlueReduced(firstFreeIdx, 1, NUM_THREADS, progress)
-                pCalculateHomology(firstFreeIdx, False, NUM_THREADS, printCommand, equivariant, progress)
+                s = pCalculateHomology(firstFreeIdx, False, NUM_THREADS, printCommand, equivariant, progress)
+                res.append(s)
                 pDeleteComplex(firstFreeIdx)
             elif i[:4].capitalize() == "Calc":
                 nice = (i[4:8].capitalize() == "Nice")
                 l = getInts(i, False)
                 if (len(l) != 1):
-                    printCommand("\"Calc\" must be followed by exactly one unsigned integer.")
-                    sys.exit()
+                    run_command_exit(printCommand, "\"Calc\" must be followed by exactly one unsigned integer.")
                 idx = idxTranslator[l[0]]
                 firstFreeIdx = shift
                 secondFreeIdx = shift + 1
@@ -346,17 +381,18 @@ def run_commandline(argv, printCommand, progress):
                 printCommand("Result:")
                 printCommand("Reduced Homology:")
                 pReducify(secondFreeIdx)
-                pCalculateHomology(secondFreeIdx, nice, NUM_THREADS, printCommand, equivariant, progress, True)
+                s = pCalculateHomology(secondFreeIdx, nice, NUM_THREADS, printCommand, equivariant, progress, True)
+                res.append(s)
                 printCommand("Unreduced Homology:")
                 pGlueReduced(firstFreeIdx, 1, NUM_THREADS, progress)
-                pCalculateHomology(firstFreeIdx, nice, NUM_THREADS, printCommand, equivariant, progress, True)
+                s = pCalculateHomology(firstFreeIdx, nice, NUM_THREADS, printCommand, equivariant, progress, True)
+                res.append(s)
                 pDeleteComplex(firstFreeIdx)
                 pDeleteComplex(secondFreeIdx)
             elif i[:4].capitalize() == "Save":
                 l = re.match("[0-9]+", i[4:])
                 if (l == None):
-                    printCommand("\"Save\" must be followed by an unsigned integer and a filename.")
-                    sys.exit()
+                    run_command_exit(printCommand, "\"Save\" must be followed by an unsigned integer and a filename.")
                 pSaveComplexToFile(idxTranslator[int(l.group(0))], i[(4 + len(l.group(0))):]) 
             elif i[:4].capitalize() == "Load":
                 pLoadComplexFromFile(shift, i[4:])
@@ -365,22 +401,20 @@ def run_commandline(argv, printCommand, progress):
             elif i[:4].capitalize() == "Dual":
                 l = re.match("[0-9]+", i[4:])
                 if (l == None):
-                    printCommand("\"Dual\" must be followed by an unsigned integer.")
-                    sys.exit()
+                    run_command_exit(printCommand, "\"Dual\" must be followed by an unsigned integer.")
                 pDual(shift, int(l.group(0)))
                 shift += 1
                 idxTranslator += [shift]
             elif i[:3].capitalize() == "Sum":
                 l = getInts(i, False)
                 if (len(l) != 2):
-                    printCommand("\"Sum\" must be followed by exactly two unsigned integer.")
-                    sys.exit()
+                    run_command_exit(printCommand, "\"Sum\" must be followed by exactly two unsigned integer.")
                 pSum(shift, idxTranslator[l[0]], idxTranslator[l[1]], NUM_THREADS, progress)
                 shift += 1
                 idxTranslator += [shift]
             else:
-                printCommand(str(i) + " is not a valid command.")
-                sys.exit()
+                run_command_exit(printCommand, str(i) + " is not a valid command.")
+        return res
 
 
 def parseOptions(argv):
@@ -402,10 +436,11 @@ def parseOptions(argv):
 HELP_TEXT = "Expecting at least three arguments:\n(1) The coefficient ring; 0 for integers, 1 for rationals, a prime p for the finite field with p elements,\n(2) the vector [a_0, ... a_{N-1}] defining the Frobenius algebra F[X]/(X^N+a_{N-1}X^{N-1}+...+a_0) or e followed by the number N for equivariant,\n(3) a root of the polynomial given in (2).\nAny following argument is interpreted as command. For example,\n./khoca.py 0 0.0 0 braidaBaB calc0\ncomputes integral Khovanov sl(2)-homology of the figure-eight knot.\nRefer to the README file or to http://lewark.de/lukas/khoca.html for more detailed help."
 verbose = 0
 progress = 0
-a = parseOptions(sys.argv)
 
 if (verbose):
     pPrintCompileInfo()
     sys.stderr.write(("Multithreading with " + str(NUM_THREADS) + " threads.\n") if (NUM_THREADS > 1) else "No multithreading.\n")
 
-run_commandline(a, print, progress)
+if not interactive():
+    a = parseOptions(sys.argv)
+    run_commandline(a, print, progress)

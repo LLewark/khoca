@@ -14,7 +14,7 @@ ENV LANG C.UTF-8
 ENV SHELL /bin/bash
 # install prerequisites
 RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends git g++ make libgmp-dev pari-gp2c python3 python3-dev python3-pip \
+    && apt-get -qq install -y --no-install-recommends git g++ make libgmp-dev pari-gp2c python3 python3-dev python3-pip python-is-python3\
     && apt-get -qq clean \
     && rm -r /var/lib/apt/lists/* \
     && pip install cython \
