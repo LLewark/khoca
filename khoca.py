@@ -121,7 +121,7 @@ def generate_girth_optimised_tree(pd):
         order = []
         signature = []
         while len(copyPd) > 0:
-            girthChange = [4 - 2 * len(openEnds & set(i[1:])) for i in copyPd]    
+            girthChange = [4 - 2 * len(openEnds & set(i[1:])) for i in copyPd]
             bestGirthChange = min(girthChange)
             bestCrossings = [i for i in range(len(girthChange)) if girthChange[i] == bestGirthChange]
             newCrossing = bestCrossings[0] if debugging else random.choice(bestCrossings)
@@ -148,7 +148,7 @@ def eliminatedoubles(l):
             j = j + 1
         if not found:
             i = i + 1
-        
+
 ## Stores the information which elementary tangles to load and how and in which order to glue them.
 # In particular, all index shifts have been done, so that calcSubTangleTree may
 # call functions in pythonInterface.cpp without further ado.
@@ -199,7 +199,7 @@ class CSchedule:
                 if not found:
                     i = i + 1
             return idx + 1
-        else:    
+        else:
             self.daughters[idx] = idx + 1
             self.sons[idx] = self.getFromMypdAndTree(mypd, tree[0], idx + 1)
             result = self.getFromMypdAndTree(mypd, tree[1], self.sons[idx])
@@ -232,7 +232,7 @@ class CSchedule:
 def reducePD(mypd):
     x = [item for subl in mypd for item in subl[1:]]
     j = x.index(max(x))
-    mypd[int(j / 4)][1 + j % 4] +=1 
+    mypd[int(j / 4)][1 + j % 4] +=1
     return mypd
 
 def calcIt(mypd, shift):
@@ -273,7 +273,7 @@ def isAllowedStackMod(a):
             return False
     return True
 
-def run_commandline(argv, printCommand, progress): 
+def run_commandline(argv, printCommand, progress):
         NUM_ARGUMENTS = 3
         global stackMod, stackFrobenius, N, stackRoot
 
@@ -281,13 +281,13 @@ def run_commandline(argv, printCommand, progress):
         if (len(argv) <= NUM_ARGUMENTS):
             printCommand(HELP_TEXT)
             return 1
-        
+
         if isAllowedStackMod(argv[1]):
             stackMod = int(argv[1])
         else:
             printCommand("First argument must be 0, 1 or a prime.")
             return 1
-        
+
         N = 0
         if argv[2][0] == "e":
             N = int(argv[2][1:])
@@ -302,13 +302,13 @@ def run_commandline(argv, printCommand, progress):
                 return 1
         stackFrobenius = l
         equivariant = (len(stackFrobenius) == 0)
-        
+
         if argv[3].isdigit() or ((argv[3][0] in ["+","-"]) and (argv[3][1:].isdigit())):
             stackRoot = int(argv[3])
         else:
             printCommand("Third argument must be a signed integer.")
             return 1
-        
+
         # doing the work
         shift = 0
         idxTranslator = [0]
@@ -318,7 +318,7 @@ def run_commandline(argv, printCommand, progress):
                 l = getInts(i, False)
                 if (len(l) % 5 != 0) or (len(l) == 0):
                     run_command_exit(printCommand, "The native code (\"" + i[3:] +  "\") following the command \"nat\" must be a non-empty list of integers whose length is divisible by five.")
-        
+
                 mypd = [list(j) for j in zip(*[iter(l)]*5)]
                 mypd = reducePD(mypd)
                 shift += calcIt(mypd, shift)
@@ -393,7 +393,7 @@ def run_commandline(argv, printCommand, progress):
                 l = re.match("[0-9]+", i[4:])
                 if (l == None):
                     run_command_exit(printCommand, "\"Save\" must be followed by an unsigned integer and a filename.")
-                pSaveComplexToFile(idxTranslator[int(l.group(0))], i[(4 + len(l.group(0))):]) 
+                pSaveComplexToFile(idxTranslator[int(l.group(0))], i[(4 + len(l.group(0))):])
             elif i[:4].capitalize() == "Load":
                 pLoadComplexFromFile(shift, i[4:])
                 shift += 1

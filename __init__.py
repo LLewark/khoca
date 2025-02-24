@@ -140,7 +140,7 @@ class InteractiveCalculator:
             Khovanov homology calculator for Frobenius algebra: F_5[X] / (1*X^2 + 1).
         """
         return 'Khovanov homology calculator for %s' %self._description
-      
+
 
     def __call__(self, link, command=None, print_messages=False, verbose=False, progress=False):
         r"""
@@ -155,7 +155,7 @@ class InteractiveCalculator:
               a list of lists is accepted which will be interpreted as a list
               of crossings in pd-notation. Alternatively you can declare the
               link by a string. The following formats are accepted:
- 
+
               - ``BraidX`` for a braid formatted as in knotscape (``a`` = first
                 Artin generator, ``A`` = its inverse, ``b`` = second Artin
                 generator, etc.). This works only for ``sl(2)`` homology,
@@ -180,7 +180,7 @@ class InteractiveCalculator:
               If this keyword argument is not given it will be interpreted
               as ``Calc0`` by default.
 
-              - ``print_messages`` boolean (default is ``False``). If set to 
+              - ``print_messages`` boolean (default is ``False``). If set to
                 ``True`` the print output of the command line version is
                 returned as a list on the second output position. By default
                 all print messages to ``stdout`` of the command line version
@@ -201,7 +201,7 @@ class InteractiveCalculator:
 
             If the option ``print_messages`` is given, than the output contains
             a second result which is a list of all suppressed print messages.
-            
+
 
         ..NOTE:
 
@@ -281,7 +281,7 @@ class InteractiveCalculator:
         arg_list += cmd_list
 
         # redirect print outputs to a list to
-        # return it optionally to the user 
+        # return it optionally to the user
         print_output = []
         def no_print(s):
             print_output.append(s)
@@ -295,7 +295,7 @@ class InteractiveCalculator:
 
         # capture print output from the shared library
         # and use the to set the description resp.
-        # return it optionally to the user 
+        # return it optionally to the user
         import py
         capture = py.io.StdCaptureFD(err=False, in_=False)
 
@@ -312,6 +312,6 @@ class InteractiveCalculator:
 
         if print_messages:
             if  out:
-                print_output += [out]
+                print_output += [out][:-1]
             return res, print_output
         return res

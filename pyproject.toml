@@ -1,8 +1,15 @@
 [build-system]
 requires = [
-    "Cython",
-    "setuptools>=42",
-    "setuptools_scm[toml]>=3.4",
+    "cython",
+    "setuptools",
+    "setuptools_scm",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+build = ["cp3*"]
+archs = ["auto64"]
+before-all = "sh before-all.sh"
+test-requires = ["py", "pytest"]
+test-command = "cd /project && pytest && cd .."
