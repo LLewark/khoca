@@ -14,9 +14,12 @@ ENV LANG C.UTF-8
 ENV SHELL /bin/bash
 # install prerequisites
 RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends git g++ make libgmp-dev pari-gp2c python3 python3-dev cython python-is-python3\
+    && apt-get -qq install -y --no-install-recommends git g++ make libgmp-dev pari-gp2c python3 python3-dev pipx python-is-python3\
     && apt-get -qq clean \
     && rm -r /var/lib/apt/lists/* \
+    && pipx install cython \
+    && pipx ensurepath \
+    && export PATH="$PATH:/root/.local/bin" \
     && git clone https://github.com/soehms/khoca.git \
     && cd khoca/ \
     && make
