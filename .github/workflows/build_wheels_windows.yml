@@ -14,7 +14,7 @@ jobs:
     defaults:
       run:
         shell: msys2 {0}
-  
+
     steps:       
       - uses: actions/checkout@v4
 
@@ -45,10 +45,6 @@ jobs:
       - name: Install cibuildwheel
         run: |
           python -m pip install cibuildwheel==2.20.0
-          
-      - name: Build gmp and pari
-        run: |
-          bash install-pari-msys2.sh pari64 gmp64
 
       - name: Build many wheels
         run: |
