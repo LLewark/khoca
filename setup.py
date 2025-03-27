@@ -36,7 +36,7 @@ bin_pkg        = join(khoca_pkg, bin_dir)
 data_pkg       = join(khoca_pkg, data_dir)
 converters_pkg = join(khoca_pkg, converters_dir)
 
-pui_name = join(bin_pkg, 'pui')
+pui_name = 'khoca.bin.pui'
 
 paridir = join('libcache', 'pari')
 gmpdir = join('libcache', 'gmp')
@@ -62,17 +62,19 @@ elif system() == 'Darwin':
     extra_link_args += ['-L/opt/homebrew/opt/libomp/lib', '-L/opt/homebrew/lib/']
     libraries = [pari_static_library, gmp_static_library]
 elif system() == 'Windows':
+    local = r'D:\a\khoca\khoca'
     include_dirs += [gmp_include_dir, pari_include_dir]
     include_dirs += [r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um',
                      r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt',
                      r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared']
     extra_compile_args += ['/DDISABLE_INLINE', '/openmp', '/std:c11', '/LD']
-    extra_link_args += [join('Windows', 'crt', 'libparicrt64.a'), 'advapi32.lib', 'legacy_stdio_definitions.lib', join('Windows', 'crt', 'get_output_format64.o')]
+    extra_link_args += [r'/LIBPATH:C:\msys64\ucrt64\lib', r'/LIBPATH:C:\msys64\mingw64\lib', r'/LIBPATH:%s' % pari_library_dir, r'/LIBPATH:%s' % gmp_library_dir]
+    extra_link_args += [r'/LIBPATH:C:\Windows\SysWOW64']
     extra_objects += [r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\Uuid.lib',
                      r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\kernel32.lib',
                      r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\ucrt\x64\ucrt.lib',
                      r'C:\msys64\ucrt64\lib\gcc\x86_64-w64-mingw32\14.2.0\libgcc.a']
-    libraries = [pari_static_library, gmp_static_library]
+    libraries = [r'%s\%s' % (local, pari_static_library), r'%s\%s' % (local, gmp_static_library), r'C:\msys64\ucrt64\lib\libgmp.a', r'C:\msys64\ucrt64\lib\libgmp.dll.a']
 
 def local_scheme(version):
     return ""

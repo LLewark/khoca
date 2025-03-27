@@ -83,7 +83,7 @@ template <class tangle_tpl>
 class Tangle {
     public:
 #ifndef getsize
-        virtual void printSize(std::vector<long long> &s) const = 0;
+        virtual void printSize(std::vector<word64> &s) const = 0;
 #endif
         /** @brief Sets this tangle to the disjoint union of the two tangles o1
          * and o2.
@@ -157,7 +157,7 @@ template <class tangle_tpl, class cobordism_tpl, class coeff_tpl>
 class Cobo {
     public:
 #ifndef getsize
-        virtual void printSize(std::vector<long long> &s) const = 0;
+        virtual void printSize(std::vector<word64> &s) const = 0;
 #endif
         /**
          * Normally, a cobordism lives in a linear combination of cobordisms
@@ -256,7 +256,7 @@ class AbstractComplex {
                 const AbstractComplex *cc2) const = 0;
         virtual void calculateSmith(std::ostream& s, int progress) const = 0;
 #ifndef getsize
-        virtual void printSize(std::vector<long long> &s) const = 0;
+        virtual void printSize(std::vector<word64> &s) const = 0;
 #endif
         virtual std::ostream& output(std::ostream &os) const = 0;
         virtual std::ostream& detailedOutput(std::ostream &os) const = 0;
@@ -279,7 +279,7 @@ template <class cobordism_tpl>
 class Complex : public AbstractComplex {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         typedef typename cobordism_tpl::tangle_t tangle_t;
         typedef VecTangles<tangle_t> vecTangles_t;
@@ -406,7 +406,7 @@ template <class tangle_tpl>
 class VecTangles {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         typedef typename std::vector<tangle_tpl> tangleCont_t;
 
@@ -424,16 +424,16 @@ class VecTangles {
         void glue(const boundary_t gluePoints[2]);
         int deloopsToBeDone() const;
         bool deloopingDone() const;
-        long long simplifyOnce();
+        word64 simplifyOnce();
         /**
          * Format: Series of tangles separated by semicola.
          */
-        void erase(long long idx) { tangles.erase(tangles.begin() + idx,
+        void erase(word64 idx) { tangles.erase(tangles.begin() + idx,
                 tangles.begin() + idx + 1);
             shiftWhatIsHigher(deloopStack, idx); assert(isSane()); }
 
-        const tangle_tpl& at(long long idx) const { return tangles.at(idx); }
-        long long size() const { return tangles.size(); }
+        const tangle_tpl& at(word64 idx) const { return tangles.at(idx); }
+        word64 size() const { return tangles.size(); }
         void writeToBin(std::ofstream &f) const;
         VecTangles(std::ifstream &f, boundary_t size);
 #ifndef notests
@@ -468,7 +468,7 @@ class VecTangles {
 
         /** Contains a list of all indices of tangles which have a loop.
          * The stack is correct and complete at all times. */
-        std::vector<long long> deloopStack;
+        std::vector<word64> deloopStack;
 };
 
 /** Don't inherit from this class.
@@ -477,7 +477,7 @@ template <class cobordism_tpl>
 class MatLCCobos {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static MatLCCobos<cobordism_tpl> setToDual(
                 const MatLCCobos<cobordism_tpl> &other);
@@ -567,7 +567,7 @@ class MatLCCobos {
          * @post The matrix represents now the correct map from lowerTangles to
          * upperTangles.
          */
-        void deloop(long long idx, int copies, const tangleCont_t &lowerTangles,
+        void deloop(word64 idx, int copies, const tangleCont_t &lowerTangles,
                 const tangleCont_t &upperTangles, bool left);
 
         void deleteNonIsos();
@@ -598,7 +598,7 @@ template <class cobordism_tpl>
 class LCCobos {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         typedef typename cobordism_tpl::coeff_t coeff_t;
         typedef std::vector<cobordism_tpl> cobosCont_t;

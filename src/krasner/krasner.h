@@ -30,7 +30,7 @@ template <int bitSize> class KrasnerCoboData;
 class KrasnerTangleData {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         boundary_t size() const { return pairing.size(); }
         boundary_t at(boundary_t idx) const { return pairing.at(idx); }
@@ -61,7 +61,7 @@ class KrasnerTangleData {
 class KrasnerTangle : public Tangle<KrasnerTangle> {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         KrasnerTangle() { }
 
@@ -135,7 +135,7 @@ class KrasnerTangle : public Tangle<KrasnerTangle> {
 template <int bitSize> class KrasnerCoboData {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         /** standard vector operations */
         boundary_t dotsSize() const {
@@ -405,7 +405,7 @@ public Cobo<KrasnerTangle, KrasnerCobo<coeff_tpl, bitSize>, coeff_tpl> {
         using Cobo<KrasnerTangle, KrasnerCobo<coeff_tpl, bitSize>,
               coeff_tpl>::coefficient;
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         typedef coeff_tpl coeff_t;
         typedef KrasnerTangle tangle_t;

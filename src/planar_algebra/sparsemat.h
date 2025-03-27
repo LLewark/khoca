@@ -37,7 +37,7 @@ class SparseMat {
         typedef std::vector<idx_t> uintCont_t;
 
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static SparseMat<entry_tpl> setToDual(
                 const SparseMat<entry_tpl> &other);

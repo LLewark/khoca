@@ -21,8 +21,8 @@
 
 #ifndef getsize
 #define INSTANTIATE_PRINTSIZE(COBO) \
-template void Complex<COBO>::printSize(std::vector<long long> &) const; \
-template void LCCobos<COBO>::printSize(std::vector<long long> &) const;
+template void Complex<COBO>::printSize(std::vector<word64> &) const; \
+template void LCCobos<COBO>::printSize(std::vector<word64> &) const;
 #else
 #define INSTANTIATE_PRINTSIZE(COBO)
 #endif

@@ -130,10 +130,13 @@ elif [ `python -c "import sys; print(sys.platform)"` = 'win32' ] ; then
     make install-doc
     make install-cfg
     make install-bin-sta
+
+    echo "Show gmp pari locations $(pwd)"
+    echo "GMP: $(find /d/a/khoca/khoca 2>/dev/null -name '*gmp*') $(find /c/msys64 2>/dev/null -name '*gmp*')"
+    echo "PARI: $(find /d/a/khoca/khoca 2>/dev/null -name '*pari*') $(find /c/msys64 2>/dev/null -name '*pari*')"
 else
 # linux
     ./Configure --prefix=${PARIPREFIX} --libdir=${PARILIBDIR} --with-gmp=${GMPPREFIX}
     make install
     make install-lib-sta
 fi
-

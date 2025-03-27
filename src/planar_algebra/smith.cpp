@@ -118,7 +118,7 @@ void calculateSmithFriend(const Complex<cobordism_tpl>& that,
                 2 * (int)j + qMins.at(i) << ",0," << qtDims.at(i).at(j) << "]";
             comma = ",";
         }
-    static long long pariStackSize;
+    static word64 pariStackSize;
     pariStackSize = 16 * 1024 * 1024;
     while (true) {
         pari_init(pariStackSize, 0);

@@ -28,6 +28,13 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
 
+      - name: Analyse
+        if: always()
+        run: |
+          echo "Analyse on $(pwd)"
+          echo "PUI $(find . -name '*pui*')"
+          echo "PyInit_pui $(grep -r PyInit_pui .)"
+
       - uses: actions/upload-artifact@v4
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}

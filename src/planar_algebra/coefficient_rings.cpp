@@ -40,12 +40,12 @@ template<> std::vector<uint16_t> FF<uint16_t>::inverses =
         std::vector<uint16_t>();
 
 #ifndef getsize
-void MRational::printSize(std::vector<long long> &s) const {
+void MRational::printSize(std::vector<word64> &s) const {
     s.at(6) += sizeof(mp_limb_t) *
         (mpz_size(mpq_numref(val)) + mpz_size(mpq_denref(val)));
 }
 
-void MInteger::printSize(std::vector<long long> &s) const {
+void MInteger::printSize(std::vector<word64> &s) const {
     s.at(6) += sizeof(mp_limb_t) * (mpz_size(val));
 }
 #endif

@@ -179,7 +179,7 @@ ComplexStack::ComplexStack(int mod_, std::vector<int> F, int N, int girth, int v
 
 #ifndef getsize
 void ComplexStack::outputTotalSize() const {
-    std::vector<long long> s(8, 0);
+    std::vector<word64> s(8, 0);
     for (std::deque<void*>::const_iterator i = complexStack.cbegin();
             i != complexStack.cend(); ++i)
         if (*i)
@@ -395,8 +395,9 @@ int ComplexStack::simplifyComplexParallely(int idx, int numThreads, int progress
 
     // Arrays are used because several threads may write to different
     // indices of one array at the same time.
-    int status[numJobs];
-    bool done[numJobs];
+    int* status = new int[numJobs];
+    bool* done = new bool[numJobs];
+
     bool changed = false;
     std::fill_n(status, numJobs, 0);
     std::fill_n(done, numJobs, false);
@@ -406,7 +407,7 @@ int ComplexStack::simplifyComplexParallely(int idx, int numThreads, int progress
  4: only higher-degree isos left && nothing changed
  5: all matrices are zero && nothing changed
 */
-    std::thread t[numThreads];
+    std::thread* t = new std::thread[numThreads];
     activeThreads = 0;
     for (int i = 0; i < numThreads; ++i)
         t[i] = std::thread(&ComplexStack::startThread, this, numJobs,
@@ -415,6 +416,10 @@ int ComplexStack::simplifyComplexParallely(int idx, int numThreads, int progress
         t[i].join();
     if (progress)
         io::cprogress() << "\n";
+
+    delete[] status;
+    delete[] done;
+    delete[] t;
 
     return allDone(idx) + (changed ? 0 : 3);
 }

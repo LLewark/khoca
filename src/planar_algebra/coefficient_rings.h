@@ -152,7 +152,7 @@ class Polynomial {
 class MRational {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static uint16_t coefficientTypeToUint() { return 1; }
         static void printRing(int, std::ostream& s) {
@@ -196,7 +196,7 @@ class MRational {
 class MInteger {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static void printRing(int, std::ostream& s) {
             s << "Z";
@@ -243,7 +243,7 @@ template <typename val_tpl>
 class FF {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const {
+        void printSize(std::vector<word64> &s) const {
             s.at(6) += sizeof(*this);
         }
 #endif

@@ -21,7 +21,7 @@
 
 #ifndef getsize
 #define INSTANTIATE_PRINTSIZE(COBO) \
-template void SparseMat<LCCobos<COBO> >::printSize(std::vector<long long> &) const;
+template void SparseMat<LCCobos<COBO> >::printSize(std::vector<word64> &) const;
 #else
 #define INSTANTIATE_PRINTSIZE(COBO)
 #endif

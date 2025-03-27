@@ -56,17 +56,17 @@ int16_t KrasnerTangle::N = 0;
 template<int bitSize> int KrasnerCoboData<bitSize>::bitsPerDot = -1;
 
 #ifndef getsize
-void KrasnerTangleData::printSize(std::vector<long long> &s) const {
+void KrasnerTangleData::printSize(std::vector<word64> &s) const {
     s.at(2) += sizeof(boundary_t) * (1 + pairing.capacity()) +
         sizeof(std::vector<boundary_t>) + sizeof(qShift_t);
 }
 
-void KrasnerTangle::printSize(std::vector<long long> &s) const {
+void KrasnerTangle::printSize(std::vector<word64> &s) const {
     data.printSize(s);
 }
 
 template <int bitSize>
-void KrasnerCoboData<bitSize>::printSize(std::vector<long long> &s) const {
+void KrasnerCoboData<bitSize>::printSize(std::vector<word64> &s) const {
 #ifdef USEOLDDOTS
     s.at(5) += sizeof(dots) + sizeof(int16_t) * dots.capacity();
 #endif
@@ -77,7 +77,7 @@ void KrasnerCoboData<bitSize>::printSize(std::vector<long long> &s) const {
 
 template <class coeff_tpl, int bitSize>
 void KrasnerCobo<coeff_tpl, bitSize>::printSize(
-        std::vector<long long> &s) const {
+        std::vector<word64> &s) const {
     data.printSize(s);
     s.at(6) += sizeof(coeff_tpl);
 }
