@@ -53,16 +53,7 @@ jobs:
 
       - name: Analyse
         if: always()
-        run: |
-          echo "Analyse on $(pwd)"
-          echo "PUI $(find . -name '*pui*')"
-          echo "libparicrt64 $(find /d/a/ -name 'libparicrt64*')"
-          echo "PyInit_pui $(grep -r PyInit_pui .)"
-          echo "__gmpz_fdiv_q_ui $(grep -r __gmpz_fdiv_q_ui .)"
-          echo "__gmpz_fdiv_q_ui $(grep -r __gmpz_fdiv_q_ui /c/msys64/ucrt64/)"
-          echo "pari_err_last $(grep -r pari_err_last .)"
-          echo "win32ctrlc $(grep -r win32ctrlc .)"
-          echo "__int64 $(grep -r __int64 .)"
+        run: sh analyse.sh
 
       - uses: actions/upload-artifact@v4
         name: Save the wheels as artifacts

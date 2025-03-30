@@ -7,10 +7,16 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+local_scheme="no-local-version"
+git_describe_command = "git describe --tags"
+
 [tool.cibuildwheel]
 build = ["cp3*"]
 archs = ["auto64"]
 before-all = "sh before-all.sh"
 before-build = "sh before-build.sh"
 test-requires = ["py", "pytest"]
-test-command = "PWD=$(pwd) && cd {project} && sh test-command.sh && cd $PWD"
+test-command = "sh {project}/test-command.sh {project}"
+# test-command = "PWD=$(pwd) && cd {project} && sh test-command.sh && cd $PWD"

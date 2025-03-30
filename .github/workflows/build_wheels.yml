@@ -30,10 +30,13 @@ jobs:
 
       - name: Analyse
         if: always()
-        run: |
-          echo "Analyse on $(pwd)"
-          echo "PUI $(find . -name '*pui*')"
-          echo "PyInit_pui $(grep -r PyInit_pui .)"
+        run: sh analyse.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: khoca.tar
+          path: /Users/runner/work/khoca/khoca.tar
+        if: always()
 
       - uses: actions/upload-artifact@v4
         with:

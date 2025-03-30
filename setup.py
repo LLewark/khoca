@@ -43,9 +43,9 @@ gmpdir = join('libcache', 'gmp')
 pari_include_dir = join(paridir, 'include')
 gmp_include_dir = join(gmpdir, 'include')
 pari_library_dir = join(paridir, 'lib')
-pari_static_library = join(pari_library_dir, 'libpari.a')
+pari_static_library = join(pari_library_dir, 'libpari.dylib')
 gmp_library_dir = join(gmpdir, 'lib')
-gmp_static_library = join(gmp_library_dir, 'libgmp.a')
+gmp_static_library = join(gmp_library_dir, 'libgmp.dylib')
 
 include_dirs = []
 extra_objects = []
@@ -59,8 +59,9 @@ if system() == 'Linux':
 elif system() == 'Darwin':
     include_dirs += [gmp_include_dir, pari_include_dir, '/opt/homebrew/opt/libomp/include']
     extra_compile_args += ['-std=c++11', '-shared', '-fPIC', '-O3', '-mmacosx-version-min=10.9', '-Wno-unreachable-code', '-Wno-unreachable-code-fallthrough']
-    extra_link_args += ['-L/opt/homebrew/opt/libomp/lib', '-L/opt/homebrew/lib/']
-    libraries = [pari_static_library, gmp_static_library]
+    extra_link_args += ['-L/opt/homebrew/opt/libomp/lib', '-L/opt/homebrew/lib/', pari_static_library, gmp_static_library]
+    #libraries = [pari_static_library, gmp_static_library]
+    libraries = ['libgmp','libgmpxx','libpari']
 elif system() == 'Windows':
     local = r'D:\a\khoca\khoca'
     include_dirs += [gmp_include_dir, pari_include_dir]
