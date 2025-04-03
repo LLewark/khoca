@@ -25,6 +25,13 @@ from platform import system
 join = os.path.join
 env = os.environ
 
+v_file = join(os.path.dirname(__file__), '_version.py')
+version = '0.9'
+with open(v_file) as f:
+    # read the current version from file
+    code = f.read()
+    exec(code, locals())
+
 khoca_dir      = '.'
 src_dir        = 'src'
 bin_dir        = 'bin'
@@ -38,44 +45,41 @@ converters_pkg = join(khoca_pkg, converters_dir)
 
 pui_name = 'khoca.bin.pui'
 
-paridir = join('libcache', 'pari')
-gmpdir = join('libcache', 'gmp')
-pari_include_dir = join(paridir, 'include')
-gmp_include_dir = join(gmpdir, 'include')
-pari_library_dir = join(paridir, 'lib')
-pari_static_library = join(pari_library_dir, 'libpari.dylib')
-gmp_library_dir = join(gmpdir, 'lib')
-gmp_static_library = join(gmp_library_dir, 'libgmp.dylib')
+Linux = (system() == 'Linux')
+MacOS = (system() == 'Darwin')
+Windows = (system() == 'Windows')
 
 include_dirs = []
+library_dirs = []
 extra_objects = []
 extra_compile_args = ['-c', '-D__STDC_LIMIT_MACROS', '-Wall']
 extra_link_args = ['-lpthread', '-lstdc++', '-t']
 libraries = []
-if system() == 'Linux':
+if Linux:
     extra_compile_args += ['-fopenmp', '-std=c++11', '-shared', '-fPIC', '-O3']
     extra_link_args += ['-z defs']
     libraries = ['gmp','gmpxx','pari']
-elif system() == 'Darwin':
-    include_dirs += [gmp_include_dir, pari_include_dir, '/opt/homebrew/opt/libomp/include']
+elif MacOS:
+    locdir = ('Pari42')
+    pari_include_dir = join(locdir, 'include')
+    pari_library_dir = join(locdir, 'lib')
+    hombrew_lib = '/opt/homebrew/lib/'
+    include_dirs += ['/opt/homebrew/opt/libomp/include', '/opt/homebrew/include/', pari_include_dir]
+    library_dirs += ['/opt/homebrew/opt/libomp/lib', hombrew_lib, pari_library_dir]
     extra_compile_args += ['-std=c++11', '-shared', '-fPIC', '-O3', '-mmacosx-version-min=10.9', '-Wno-unreachable-code', '-Wno-unreachable-code-fallthrough']
-    extra_link_args += ['-L/opt/homebrew/opt/libomp/lib', '-L/opt/homebrew/lib/', pari_static_library, gmp_static_library]
-    #libraries = [pari_static_library, gmp_static_library]
-    libraries = ['libgmp','libgmpxx','libpari']
-elif system() == 'Windows':
-    local = r'D:\a\khoca\khoca'
-    include_dirs += [gmp_include_dir, pari_include_dir]
-    include_dirs += [r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um',
-                     r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt',
-                     r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared']
+    libraries = ['gmp','gmpxx', 'pari']
+elif Windows:
+    locdir = ('Pari42')
+    pari_include_dir = join(locdir, 'include')
+    pari_library_dir = join(locdir, 'bin')
+    gmp_include_dir = r'C:\msys64\usr\include'
+    gmp_library_dir = r'C:\msys64\mingw64\lib'
+    gmp_library_dir_bin = r'C:\msys64\mingw64\bin'
+
+    include_dirs += [pari_include_dir, gmp_include_dir]
+    library_dirs += [gmp_library_dir, gmp_library_dir_bin, pari_library_dir]
     extra_compile_args += ['/DDISABLE_INLINE', '/openmp', '/std:c11', '/LD']
-    extra_link_args += [r'/LIBPATH:C:\msys64\ucrt64\lib', r'/LIBPATH:C:\msys64\mingw64\lib', r'/LIBPATH:%s' % pari_library_dir, r'/LIBPATH:%s' % gmp_library_dir]
-    extra_link_args += [r'/LIBPATH:C:\Windows\SysWOW64']
-    extra_objects += [r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\Uuid.lib',
-                     r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\kernel32.lib',
-                     r'C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\ucrt\x64\ucrt.lib',
-                     r'C:\msys64\ucrt64\lib\gcc\x86_64-w64-mingw32\14.2.0\libgcc.a']
-    libraries = [r'%s\%s' % (local, pari_static_library), r'%s\%s' % (local, gmp_static_library), r'C:\msys64\ucrt64\lib\libgmp.a', r'C:\msys64\ucrt64\lib\libgmp.dll.a']
+    extra_link_args = [join(gmp_library_dir, 'libgmp.dll.a'), join(gmp_library_dir, 'libgmpxx.dll.a'), join(pari_library_dir, 'libpari.dll.a')]
 
 def local_scheme(version):
     return ""
@@ -96,6 +100,7 @@ def create_extension(name, cpps, includes):
     sources=cpps,
     language='c++',
     include_dirs=includes,
+    library_dirs=library_dirs,
     extra_objects=extra_objects,
     extra_compile_args=extra_compile_args,
     libraries=libraries,
@@ -114,54 +119,19 @@ include_dirs += ['', 'python_interface', 'planar_algebra', 'krasner']
 
 pui_ext = create_extension(pui_name, cpp_files, include_dirs)
 
-
-long_description = """
-Khoca is a packaging of Lukas Lewark's Khovanov homology calculator
-[khoca](https://github.com/LLewark/khoca/)  for easy installation in
-[sage](http://www.sagemath.org/).
-
-From the original page:
-
-"""
-
-this_directory = os.path.abspath(os.path.dirname(__file__))
-with open(join(this_directory, 'README.md'), encoding='utf-8') as f:
-    long_description += f.read()
-
-
-
-
 setup(name = khoca_pkg,
-      zip_safe = False,
-      description = 'Khoca as pip installable package',
-      long_description = long_description,
-      long_description_content_type='text/markdown',
-      keywords = 'Knot theory, Khovanov homology',
-      classifiers = [
-           'Development Status :: 3 - Alpha',
-           'Intended Audience :: Science/Research',
-           'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
-           'Operating System :: POSIX :: Linux',
-           'Programming Language :: C++',
-           'Programming Language :: Python',
-           'Programming Language :: Cython',
-           'Topic :: Scientific/Engineering :: Mathematics',
-      ],
-      author = 'Sebastian Oehms',
-      author_email = 'seb.oehms@gmail.com',
-      url = 'https://github.com/soehms/khoca/',
+      version=version,
       license='GPLv2+',
-      packages = [khoca_pkg, bin_pkg, converters_pkg, data_pkg],
-      package_dir = {
+      zip_safe=False,
+      packages=[khoca_pkg, bin_pkg, converters_pkg, data_pkg],
+      package_dir={
           khoca_pkg:      khoca_dir,
           bin_pkg:        bin_dir,
           converters_pkg: converters_dir,
           data_pkg:       data_dir
       },
-      ext_modules = [pui_ext]+cythonize('src/python_interface/pui.pyx'),
-      package_data = {khoca_pkg: data_files},
+      ext_modules=[pui_ext]+cythonize('src/python_interface/pui.pyx'),
+      package_data={khoca_pkg: data_files},
       include_package_data=True,
-      use_scm_version={"local_scheme": local_scheme},
-      setup_requires=['setuptools_scm'],
       install_requires=[]
 )

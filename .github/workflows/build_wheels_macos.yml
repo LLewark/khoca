@@ -12,7 +12,9 @@ jobs:
     uses: ./.github/workflows/build_wheels.yml
     with:
       operating-systems: >-
-        ["macos-13", "macos-14"]
+        ["macos"]
+      system-versions: >-
+        ["13", "14"]
 
   pypi-publish:
     # https://github.com/pypa/gh-action-pypi-publish

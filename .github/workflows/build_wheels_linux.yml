@@ -12,7 +12,9 @@ jobs:
     uses: ./.github/workflows/build_wheels.yml
     with:
       operating-systems: >-
-        ["ubuntu-latest"]
+        ["ubuntu"]
+      system-versions: >-
+        ["latest"]
 
   pypi-publish:
     name: Upload wheels to PyPI

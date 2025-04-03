@@ -141,6 +141,7 @@ class Polynomial {
                 }
             return os;
         }
+
     private:
         std::vector<Monomial_t> monoms;
 };

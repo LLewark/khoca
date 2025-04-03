@@ -315,3 +315,17 @@ class InteractiveCalculator:
                 print_output += [out][:-1]
             return res, print_output
         return res
+
+    def khoca_version(self):
+        r"""
+        Return the version if ``Khoca``.
+
+        EXAMPLES::
+
+            >>> from khoca import InteractiveCalculator
+            >>> KH = InteractiveCalculator()
+            >>> KH.khoca_version() >= '1.1'
+            True
+        """
+        from khoca._version import version
+        return version
