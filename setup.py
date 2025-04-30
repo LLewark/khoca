@@ -55,6 +55,7 @@ extra_objects = []
 extra_compile_args = ['-c', '-D__STDC_LIMIT_MACROS', '-Wall']
 extra_link_args = ['-lpthread', '-lstdc++', '-t']
 libraries = []
+
 if Linux:
     extra_compile_args += ['-fopenmp', '-std=c++11', '-shared', '-fPIC', '-O3']
     extra_link_args += ['-z defs']

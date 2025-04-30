@@ -67,7 +67,7 @@ cdef class PyComplexStack(object):
 
 	def __enter__(self):
 		r"""
-		Reset the global ``ComplexStack``.
+		Save former global ``ComplexStack`` and reset current.
 		"""
 		global stack
 		self.former_stack = stack
@@ -80,6 +80,7 @@ cdef class PyComplexStack(object):
 		global stack
 		del stack
 		stack = self.former_stack
+
 
 def pPrintCompileInfo():
 	global stack

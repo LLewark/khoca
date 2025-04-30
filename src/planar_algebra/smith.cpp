@@ -79,6 +79,49 @@ bool withPari() {
     return true;
 }
 
+
+/** Variables and functions to protect the Pari-stack of external usage
+ */
+bool backup_needed  = true; // false if cypari / cypari2 don't use the same Pari stack
+void* mem_block; // pointer to save memory block of externally used Pari stack
+size_t mem_block_size = 0; // size of externally used Pari stack
+pari_sp av = 0; // avma of Pari-stack from external usage
+
+void pari_backup() {
+    av = avma;
+    if (av == 0) {backup_needed = false;}
+    if (backup_needed) {
+        mem_block_size = (size_t) (pari_mainstack->top - pari_mainstack->bot);
+        mem_block = malloc(mem_block_size);
+        memcpy(mem_block, (void*) pari_mainstack->bot, mem_block_size);
+    }
+}
+
+void pari_rollback() {
+    if (backup_needed) {
+        avma = av;
+        memcpy((void*) pari_mainstack->bot, mem_block, mem_block_size);
+        free(mem_block);
+    }
+}
+
+void init_pari(word64 pariStackSize) {
+    if (backup_needed) {
+        size_t size = std::max((size_t) pariStackSize, pari_mainstack->rsize);
+        size_t maxsize = std::max((size_t) pariStackSize, pari_mainstack->vsize);
+        paristack_setsize(size, maxsize);
+    }
+    else {
+        pari_init(pariStackSize, 0);
+    }
+}
+
+void close_pari() {
+    if (!backup_needed) {
+        pari_close();
+    }
+}
+
 /** Converts an MPIR-arbitrary precision integer to a PARI-arbitrary precision
  * integer.
  */
@@ -118,12 +161,13 @@ void calculateSmithFriend(const Complex<cobordism_tpl>& that,
                 2 * (int)j + qMins.at(i) << ",0," << qtDims.at(i).at(j) << "]";
             comma = ",";
         }
+
     static word64 pariStackSize;
     pariStackSize = 16 * 1024 * 1024;
     while (true) {
-        pari_init(pariStackSize, 0);
+        init_pari(pariStackSize);
         pari_CATCH(CATCH_ALL) {
-            pari_close();
+            close_pari();
             pariStackSize *= 2;
             std::cerr << "Pari stack overflows. Doubling stack to "
                 << pariStackSize / (1024 * 1024) << "MB and retrying.\n";
@@ -212,6 +256,6 @@ void calculateSmithFriend(const Complex<cobordism_tpl>& that,
     }
     if (progress)
         std::cerr << "\n\n";
-    pari_close();
+    close_pari();
     s << "]";
 }

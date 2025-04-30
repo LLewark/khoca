@@ -61,7 +61,6 @@ typedef int8_t boundary_t;
 const boundary_t boundary_t_max = INT8_MAX;
 typedef int16_t qShift_t;
 
-
 /** Decreases by 1 all entries in v that are greater or equal to x.
  */
 template<class E_tpl>

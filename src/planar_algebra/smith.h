@@ -20,3 +20,8 @@
  *
  */
 
+/** functions to control external use of pari
+  * and protect the stack for it
+  */
+void pari_backup();
+void pari_rollback();

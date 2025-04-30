@@ -52,6 +52,7 @@ Everything can be multithreaded (in the future).
 #include "../planar_algebra/coefficient_rings.h"
 #include "../planar_algebra/sparsemat.h"
 #include "../planar_algebra/planar_algebra.h"
+#include "../planar_algebra/smith.h"
 #include "../krasner/krasner.h"
 #include "pythonInterface.h"
 
@@ -171,6 +172,7 @@ ComplexStack::ComplexStack(int mod_, std::vector<int> F, int N, int girth, int v
         throw;
     }
 
+    pari_backup();
     ((AbstractComplex*)tokenComplex)->initialiseFrobenius(F, N);
     std::cout << "Frobenius algebra: ";
     ((AbstractComplex*)tokenComplex)->printFrobenius(std::cout);
@@ -192,6 +194,7 @@ void ComplexStack::outputTotalSize() const {
 #endif
 
 ComplexStack::~ComplexStack() {
+    pari_rollback();
     delete ((AbstractComplex*)tokenComplex);
     for (auto i = complexStack.begin(); i != complexStack.end(); ++i)
         deleteComplex(i - complexStack.begin());
