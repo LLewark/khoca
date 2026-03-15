@@ -47,7 +47,7 @@
 
 #ifndef getsize
 template <class entry_tpl>
-void SparseMat<entry_tpl>::printSize(std::vector<long long> &s) const {
+void SparseMat<entry_tpl>::printSize(std::vector<word64> &s) const {
     s.at(4) += sizeof(entry_tpl) * val.capacity();
     s.at(3) += sizeof(idx_t) *
         (colInd.capacity() + rowPtr.capacity() + invertibles.capacity());

@@ -20,7 +20,7 @@
 #
 
 
-from fractions import gcd
+from math import gcd
 import sys, re
 
 def sgn(x):

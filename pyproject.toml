@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "cython",
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "khoca"
+authors = [
+  {name = "Lukas Lewark", email = "lukas.lewark@math.ethz.ch"},
+  {name = "Sebastian Oehms", email = "seb.oehms@gmail.com"}
+]
+maintainers = [
+  {name = "Sebastian Oehms", email = "seb.oehms@gmail.com"}
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+description = "Khoca as pip installable package"
+keywords = ["Knot theory, Khovanov homology"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: C++",
+    "Programming Language :: Python",
+    "Programming Language :: Cython",
+    "Topic :: Scientific/Engineering :: Mathematics"
+]
+dynamic = ["version", "license"]
+
+[project.urls]
+Homepage = "https://people.math.ethz.ch/~llewark/khoca.php"
+Repository = "https://github.com/soehms/khoca/"
+
+[tool.cibuildwheel]
+build = ["cp3*"]
+archs = ["auto64"]
+before-all = "sh before-all.sh"
+before-build = "sh before-build.sh"
+test-requires = ["py", "sympy", "database_knotinfo"]
+test-command = "sh {project}/test-command.sh {project}"

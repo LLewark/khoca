@@ -22,7 +22,7 @@
 #ifndef getsize
 #define INSTANTIATE_PRINTSIZE(COEFF, BITSIZE) \
 template void KrasnerCobo<COEFF, BITSIZE>::printSize( \
-        std::vector<long long> &) const;
+        std::vector<word64> &) const;
 #else
 #define INSTANTIATE_PRINTSIZE(COEFF, BITSIZE)
 #endif

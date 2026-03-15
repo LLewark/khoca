@@ -25,16 +25,17 @@ You are encouraged to contact me with any kind of questions or comments
 regarding khoca. If you are using khoca for a project or publication, please
 cite this web page, or the paper [3].
 
-## Installation
+## 1. Installation
+
+
+### 1.1 Download of binaries
 
 Binaries for Linux are available for download from 
 http://lewark.de/lukas/khoca.html
 They should run on any Linux installation that has python3.6. Binaries for
 Windows or Mac are not available at the moment.
 
-The source code, including instructions on how to compile it, is available at
-the GitHub repository khoca:
-https://github.com/LLewark/khoca
+### 1.2 Run in a Docker container
 
 To run Khoca in Docker type:
 
@@ -53,8 +54,35 @@ docker build -f Dockerfile --tag khoca:<your_tag> .
 If your machine has an older CPU it can happen that you get *Illegal Instruction*
 errors. In that case you better should use the image `soehms/khoca:old_cpu`.
 
+### 1.3 Installation from [PyPI](https://pypi.org/project/khoca/) via `pip`
 
-## Usage
+This installation method provides an interactive access to Khoca inside a Python session or program.
+
+```bash
+pip install khoca
+```
+
+or for a specific version (1.4 in the example):
+
+```bash
+pip install khoca==1.4
+```
+
+This also works with [SageMath](https://www.sagemath.org/):
+
+```bash
+sage -pip install khoca
+```
+
+### 1.4 Source code
+
+The source code, including instructions on how to compile it, is available at
+the GitHub repository khoca:
+https://github.com/LLewark/khoca
+
+## 2. Usage
+
+### 2.1 Usage at the `bash` prompt
 
 To use the program, run khoca.py (a python3 script) from the command line.
 khoca.py takes three arguments:
@@ -153,8 +181,192 @@ torus knot.
 
 calculates `sl(2)` homology of the sum of the trefoil, its mirror image and a figure-8-knot.
 
+### 2.2 Usage inside a Python session or program
 
-# Encoding of matched diagrams
+To use Khoca inside a Python session, function or method of a Python class you need to install it via `pip` (see install hint 1.3 above). In Python you can import an interactive Khoca calculator.
+
+It's output consists of two lists of quadruples the first for reduced and the second for unreduced homology. In such a quadruple the first item stands for the `t`-degree, the second for the `q`-degree, the third for the torsion and the last item stands for the coefficient of the corresponding summand of the homology.
+
+If the option `print_messages` is given, than the output contains a second result which is a list of all print messages of the command-line version.
+
+Examples:
+
+```Python console
+    >>> from khoca import InteractiveCalculator
+    >>> KH = InteractiveCalculator()
+    >>> KH
+    Khovanov homology calculator for Frobenius algebra: Z[X] / (1*X^2).
+    >>> KH('braidaBaB')
+    [[[-2, 4, 0, 1], [-1, 2, 0, 1], [0, 0, 0, 1], [1, -2, 0, 1], [2, -4, 0, 1],
+      [-2, 4, 0, 0], [-1, 4, 0, 0], [-1, 2, 0, 0], [0, 2, 0, 0], [0, 0, 0, 0],
+      [1, 0, 0, 0], [1, -2, 0, 0], [2, -2, 0, 0]], [[-2, 3, 0, 1], [-2, 5, 0, 1],
+      [-1, 1, 0, 1], [-1, 3, 0, 1], [0, -1, 0, 1], [0, 1, 0, 1], [1, -3, 0, 1],
+      [1, -1, 0, 1], [2, -5, 0, 1], [2, -3, 0, 1], [-1, 3, 2, 1], [-2, 3, 0, -1],
+      [-1, 3, 0, -1], [-2, 5, 0, 0], [-1, 5, 0, 0], [-1, 1, 0, 0], [0, 1, 0, 0],
+      [-1, 3, 0, 0], [0, 3, 0, 0], [0, -1, 0, 0], [1, -1, 0, 0], [0, 1, 0, 0],
+      [1, 1, 0, 0], [2, -3, 2, 1], [1, -3, 0, -1], [2, -3, 0, -1], [1, -1, 0, 0],
+      [2, -1, 0, 0]]]
+    >>> res, mess = KH('braidaaa', print_messages=True); mess # doctest: +NORMALIZE_WHITESPACE
+    ['Result:', 'Reduced Homology:', 'Non-equivariant homology:',
+     't^-3q^8 + t^-2q^6 + t^0q^2', 'Unreduced Homology:',
+     'Non-equivariant homology:', 't^-3q^9 + t^-2q^5 + t^0q^1 + t^0q^3 + t^-2q^7[2]']
+    >>> KH((1, 1, 1)) == KH('braidaaa')
+    True
+    >>> KH([[4,2,5,1],[8,6,1,5],[6,3,7,4],[2,7,3,8]]) == KH('braidaBaB')
+    True
+    >>> KH((1, -2, 1, -2)) == KH('braidaBaB')
+    True
+    >>>
+```
+
+In these examples default values for the base ring, the frobenius algebra, the root and equivariance are used. For special values of these properties you need to define specific instances of the interactive calculator. In an `IPython` session you may obtain more information by online-help using `?`:
+
+```Python console
+In [1]: from khoca import InteractiveCalculator
+
+In [2]: InteractiveCalculator?
+
+
+Init signature:
+InteractiveCalculator(
+    coefficient_ring=0,
+    frobenius_algebra=(0, 0),
+    root=0,
+    equivariant=None,
+)
+Docstring:     
+Class to allow the usage of `Khoca` interactively in a Python session.
+
+EXAMPLES::
+
+    >>> from khoca import InteractiveCalculator
+... (as above)
+    >>> KH((1, -2, 1, -2)) == KH('braidaBaB')
+    True
+    >>>
+Init docstring:
+Constructor.
+
+INPUT:
+
+    - ``coefficient_ring`` -- coefficient ring ``F``of the homology. It
+      can be given by an integer (or string convertible to an integer):
+      -  ``0`` (default) the ring of integers
+      -  ``1``  the rational field
+      -  a prime for the corresponding finite field
+    - ``frobenius_algebra`` -- the Frobenius algebra ``F[x]/p`` given by
+      the coefficients of the normed polynomial ``p`` (default is
+      ``p = X^2``) as a tuple of length ``deg(p)`` where the constant
+      term is the first entry.
+    - ``root`` -- a root of the polynomial ``p`` (default is zero).
+    - ``equivariant`` optional integer ``n > 1`` giving the degree of
+      ``sl(n)`` for equivariant homology. If this is given then the input
+      to the keyword arguments  ``frobenius_algebra`` and ``root`` will
+      be ignored. If it is not given then non equivariant homology will
+      be calculated.
+
+EXAMPLES::
+
+    >>> from khoca import InteractiveCalculator
+    >>> InteractiveCalculator(1, (0, 1), 0)
+    Khovanov homology calculator for Frobenius algebra: Q[X] / (1*X^2 + 1*X).
+    >>> from khoca import InteractiveCalculator
+    >>> KH = InteractiveCalculator(equivariant=3); KH
+    Khovanov homology calculator for Frobenius algebra: Z[a, b, c][X] / (1*X^3 + c*X^2 + b*X + a).
+```
+
+To obtain the documentation of the instance-call apply `?` to an instance of the calculator:
+
+```Python console
+In [3]: KH = InteractiveCalculator()
+
+In [4]: KH?
+Signature:      KH(link, command=None, print_messages=False, verbose=False, progress=False)
+Type:           InteractiveCalculator
+...  (as above)
+    Khovanov homology calculator for Frobenius algebra: Z[a, b, c][X] / (1*X^3 + c*X^2 + b*X + a).
+Call docstring:
+Instance call to apply the calculator to a link with respect to a
+certain command.
+
+INPUT:
+
+    - ``link`` -- the link to which the calculation should be done.
+      It can be given as a Tuple which will be interpreted as a braid
+      in Tietze form which closure is the link in question. Further
+      a list of lists is accepted which will be interpreted as a list
+      of crossings in pd-notation. Alternatively you can declare the
+      link by a string. The following formats are accepted:
+
+      - ``BraidX`` for a braid formatted as in knotscape (``a`` = first
+        Artin generator, ``A`` = its inverse, ``b`` = second Artin
+        generator, etc.). This works only for ``sl(2)`` homology,
+        otherwise output is nonsensical
+      - ``PdX`` for input in PD notation (as e.g. given on !KnotInfo).
+        Again, this works only for ``sl(2)`` homology, otherwise output
+        is nonsensical
+      - ``GaussX`` for bipartite knot given as a matched diagram,
+        following the convention explained in the section below. This
+        works for ``sl(N)`` homology for all ``N``
+      - ``command`` -- a command given as string as explained in the
+        command line version of the functionality. This can be:
+      - ``MirrorX`` takes the dual of the result at spot ``X``
+      - ``SumXY`` computes the homology of the connected sum of the
+        results saved at spots ``X`` and ``Y`` (numbers separated by
+        a non-digit character)
+      - ``CalcX` outputs the result saved at spot X. If you forget
+        this command, the program will have no output
+
+      If this keyword argument is not given it will be interpreted
+      as ``Calc0`` by default.
+
+      - ``print_messages`` boolean (default is ``False``). If set to
+        ``True`` the print output of the command line version is
+        returned as a list on the second output position. By default
+        all print messages to ``stdout`` of the command line version
+        are suppressed
+      - ``verbose`` boolean (default is ``False``). If it is set to
+        ``True`` all print messages to ``stdout`` together with special
+        verbose messages of the command line version are printed
+      - ``progress`` boolean (default is ``False``). If it is set to
+        ``True`` progress bars will be printed
+
+OUTPUT:
+
+    Two lists of quadruples the first for reduced and the second for
+    unreduced homology. In such a quadruple the first item stands for
+...
+EXAMPLES::
+
+    >>> from khoca import InteractiveCalculator
+    >>> KH = InteractiveCalculator(1, (1, 0), 0); KH
+    Khovanov homology calculator for Frobenius algebra: Q[X] / (1*X^2 + 1).
+    >>> KH('braidaaa', 'dual0 sum0+1 braidaBaB sum2+3 calc4', print_messages=True)
+    ([[[-5, 10, 0, 1], [-4, 8, 0, 1], [-4, 8, 0, 1], [-3, 6, 0, 1],
+       [-3, 6, 0, 1], [-3, 6, 0, 1], [-2, 4, 0, 1], [-2, 4, 0, 1],
+       [-2, 4, 0, 1], [-2, 4, 0, 1], [-2, 4, 0, 1], [-2, 4, 0, 1],
+       [-1, 2, 0, 1], [-1, 2, 0, 1], [-1, 2, 0, 1], [-1, 2, 0, 1],
+       [-1, 2, 0, 1], [-1, 2, 0, 1], [-1, 2, 0, 1], [0, 0, 0, 1],
+       [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 1],
+       [0, 0, 0, 1], [0, 0, 0, 1], [1, -2, 0, 1], [1, -2, 0, 1],
+       [1, -2, 0, 1], [1, -2, 0, 1], [1, -2, 0, 1], [1, -2, 0, 1],
+       [1, -2, 0, 1], [2, -4, 0, 1], [2, -4, 0, 1], [2, -4, 0, 1],
+       [2, -4, 0, 1], [2, -4, 0, 1], [2, -4, 0, 1], [3, -6, 0, 1],
+       [3, -6, 0, 1], [3, -6, 0, 1], [4, -8, 0, 1], [4, -8, 0, 1],
+       [5, -10, 0, 1]], [[0, -1, 0, 1], [0, 1, 0, 1]]],
+     ['Result:', 'Reduced Homology:', 'Non-equivariant homology:',
+      'Page 1:', 't^-5q^10 + 2t^-4q^8 + 3t^-3q^6 + 6t^-2q^4 + 7t^-1q^2 + 7t^0q^0
+               + 7t^1q^-2 + 6t^2q^-4 + 3t^3q^-6 + 2t^4q^-8 + t^5q^-10',
+      'The spectral sequence collapses on the first page.\n',
+      'Unreduced Homology:', 'Non-equivariant homology:',
+      'Page 1:', 't^-5q^11 + t^-4q^7 + t^-4q^9 + t^-3q^5 + 2t^-3q^7 + 2t^-2q^3
+               + 4t^-2q^5 + 4t^-1q^1 + 3t^-1q^3 + 4t^0q^-1 + 4t^0q^1 + 3t^1q^-3
+               + 4t^1q^-1 + 4t^2q^-5 + 2t^2q^-3 + 2t^3q^-7 + t^3q^-5 + t^4q^-9
+               + t^4q^-7 + t^5q^-11',
+      'Page 3 = infinity:', 't^0q^-1 + t^0q^1'])
+```
+
+## 3. Encoding of matched diagrams
 
 This section describes how to encode a matched knot diagram, i.e. a diagram
 that consists of `n` copies of the basic 2-crossing tangle. Resolving each basic
@@ -172,7 +384,7 @@ encoded as `[-4,6,5]`.
 `./converters/montesinos.py` to obtain the encoding of a matched diagram of
 Montesinos knots.
 
-# References
+## 4. References
 
 [1] Bar-Natan: Fast Khovanov Homology Computations, Journal of Knot Theory and
 its Ramifications 16 (2007), no.3, pp. 243-255, arXiv:math/0606318, MR2320156.

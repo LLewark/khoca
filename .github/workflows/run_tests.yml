@@ -34,4 +34,7 @@ jobs:
       - name: Run Test
         id: run_test
         run: |
-          ./khoca.py 0 0.0 0 braidaBaB calc0 | grep -c "t^-2q^4 + t^-1q^2 + t^0q^0 + t^1q^-2 + t^2q^-4"
+          RES=$(./khoca.py 0 0.0 0 braidaBaB calc0)
+          echo "RES: $RES"
+          echo $RES | grep -c "t^-2q^4 + t^-1q^2 + t^0q^0 + t^1q^-2 + t^2q^-4"
+          echo $RES | grep -c "t^-2q^5 + t^-1q^1 + t^0q^-1 + t^0q^1 + t^1q^-1 + t^2q^-5 + t^-1q^3\[2\] + t^2q^-3\[2\]"

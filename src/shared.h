@@ -35,6 +35,15 @@ At least one of USEZIPDOTS and USEOLDDOTS must be defined.
 #endif
 #endif
 
+#if defined(_MSC_VER) || defined(__BORLANDC__)
+    typedef __int64 word64;
+    #define W64LIT(x) (word64) x
+#else
+    typedef long long word64;
+    #define W64LIT(x) (word64) x
+#endif
+
+
 int insane();
 
 class io {
@@ -51,7 +60,6 @@ class io {
 typedef int8_t boundary_t;
 const boundary_t boundary_t_max = INT8_MAX;
 typedef int16_t qShift_t;
-
 
 /** Decreases by 1 all entries in v that are greater or equal to x.
  */

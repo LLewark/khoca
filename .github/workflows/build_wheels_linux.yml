@@ -1,0 +1,23 @@
+name: Build wheels Linux
+
+on:
+  push:
+    tags:
+      - "*" # Push events of new tags
+  workflow_dispatch:
+    # Allow to run manually
+
+jobs:
+  build_wheels:
+    uses: ./.github/workflows/build_wheels.yml
+    with:
+      operating-systems: >-
+        ["ubuntu"]
+      system-versions: >-
+        ["latest"]
+
+  pypi-publish:
+    name: Upload wheels to PyPI
+    needs: build_wheels
+    uses: ./.github/workflows/publish_pypi.yml
+    secrets: inherit

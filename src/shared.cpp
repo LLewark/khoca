@@ -29,8 +29,8 @@
 
 template void shiftWhatIsHigher<boundary_t>(std::vector<boundary_t> &v,
         const boundary_t &x);
-template void shiftWhatIsHigher<long long>(std::vector<long long> &v,
-        const long long &x);
+template void shiftWhatIsHigher<word64>(std::vector<word64> &v,
+        const word64 &x);
 
 template bool alphToChar<uint8_t>(char c, uint8_t &x);
 template bool alphToChar<uint16_t>(char c, uint16_t &x);

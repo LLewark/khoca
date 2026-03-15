@@ -92,7 +92,7 @@ class Polynomial {
             }
             s << "]";
         }
-        static void intialiseFrobenius(std::vector<Polynomial_t> &frobenius, const std::vector<int> &, int N) {
+        static void initialiseFrobenius(std::vector<Polynomial_t> &frobenius, const std::vector<int> &, int N) {
             for (int i = 0; i < N; ++i) {
                 std::vector<int16_t> exponents(N, 0);
                 exponents.at(i) = 1;
@@ -141,6 +141,7 @@ class Polynomial {
                 }
             return os;
         }
+
     private:
         std::vector<Monomial_t> monoms;
 };
@@ -152,13 +153,13 @@ class Polynomial {
 class MRational {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static uint16_t coefficientTypeToUint() { return 1; }
         static void printRing(int, std::ostream& s) {
             s << "Q";
         }
-        static void intialiseFrobenius(std::vector<MRational> &frobenius, const std::vector<int> &F, int) {
+        static void initialiseFrobenius(std::vector<MRational> &frobenius, const std::vector<int> &F, int) {
             for (auto i = F.begin(); i != F.end(); ++i)
                 frobenius.push_back(MRational(*i));
             frobenius.push_back(MRational(1));
@@ -196,13 +197,13 @@ class MRational {
 class MInteger {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const;
+        void printSize(std::vector<word64> &s) const;
 #endif
         static void printRing(int, std::ostream& s) {
             s << "Z";
         }
         static uint16_t coefficientTypeToUint() { return 0; }
-        static void intialiseFrobenius(std::vector<MInteger> &frobenius, const std::vector<int> &F, int) {
+        static void initialiseFrobenius(std::vector<MInteger> &frobenius, const std::vector<int> &F, int) {
             for (auto i = F.begin(); i != F.end(); ++i)
                 frobenius.push_back(MInteger(*i));
             frobenius.push_back(MInteger(1));
@@ -243,7 +244,7 @@ template <typename val_tpl>
 class FF {
     public:
 #ifndef getsize
-        void printSize(std::vector<long long> &s) const {
+        void printSize(std::vector<word64> &s) const {
             s.at(6) += sizeof(*this);
         }
 #endif
@@ -251,7 +252,7 @@ class FF {
             s << "F_" << (int)p;
         }
         static uint16_t coefficientTypeToUint() { return p; }
-        static void intialiseFrobenius(std::vector<FF<val_tpl> > &frobenius, const std::vector<int> &F, int) {
+        static void initialiseFrobenius(std::vector<FF<val_tpl> > &frobenius, const std::vector<int> &F, int) {
             for (auto i = F.begin(); i != F.end(); ++i)
                 frobenius.push_back(FF<val_tpl>(*i));
             frobenius.push_back(FF<val_tpl>(1));

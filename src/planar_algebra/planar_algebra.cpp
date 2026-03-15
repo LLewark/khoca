@@ -60,7 +60,7 @@
  */
 #ifndef getsize
 template <class cobordism_tpl>
-void Complex<cobordism_tpl>::printSize(std::vector<long long> &s) const {
+void Complex<cobordism_tpl>::printSize(std::vector<word64> &s) const {
     s.at(0) += sizeof(*this);
     s.at(1) += sizeof(vecTangles_t) * vecTangles.capacity();
     s.at(3) += sizeof(matLCCobos_t) * matLCCobos.capacity();
@@ -71,20 +71,20 @@ void Complex<cobordism_tpl>::printSize(std::vector<long long> &s) const {
 }
 
 template <class tangle_tpl>
-void VecTangles<tangle_tpl>::printSize(std::vector<long long> &s) const {
-    s.at(1) += sizeof(long long) * deloopStack.capacity();
+void VecTangles<tangle_tpl>::printSize(std::vector<word64> &s) const {
+    s.at(1) += sizeof(word64) * deloopStack.capacity();
     for (typename tangleCont_t::const_iterator i = tangles.begin();
             i != tangles.end(); ++i)
         i->printSize(s);
 }
 
 template <class cobordism_tpl>
-void MatLCCobos<cobordism_tpl>::printSize(std::vector<long long> &s) const {
+void MatLCCobos<cobordism_tpl>::printSize(std::vector<word64> &s) const {
     morphisms.printSize(s);
 }
 
 template <class cobordism_tpl>
-void LCCobos<cobordism_tpl>::printSize(std::vector<long long> &s) const {
+void LCCobos<cobordism_tpl>::printSize(std::vector<word64> &s) const {
     for (auto i = cobordisms.cbegin(); i != cobordisms.cend(); ++i)
         i->printSize(s);
 }
@@ -138,7 +138,7 @@ LCCobos<cobordism_tpl>::LCCobos(std::ifstream &f, bool intCoefficients) {
     uint64_t size;
     readFromBinTpl(f, size);
     cobordisms.reserve(size);
-    for (long long i = 0; i < (long long)size; ++i)
+    for (word64 i = W64LIT(0); i < (word64)size; ++i)
         cobordisms.emplace_back(f, intCoefficients);
 }
 
@@ -147,10 +147,10 @@ VecTangles<tangle_tpl>::VecTangles(std::ifstream &f, boundary_t boundarySize) {
     uint64_t size, deloopStackSize;
     readFromBinTpl(f, size);
     tangles.reserve(size);
-    for (long long i = 0; i < (long long)size; ++i)
+    for (word64 i = W64LIT(0); i < (word64)size; ++i)
         tangles.emplace_back(f, boundarySize);
     readFromBinTpl(f, deloopStackSize);
-    for (long long i = 0; i < (long long)deloopStackSize; ++i) {
+    for (word64 i = W64LIT(0); i < (word64)deloopStackSize; ++i) {
         uint64_t v;
         readFromBinTpl(f, v);
         deloopStack.emplace_back(std::move(v));
@@ -175,11 +175,11 @@ Complex<cobordism_tpl>::Complex(std::ifstream &f) {
     readFromBinTpl(f, vecTanglesSize);
     boundary.setToSize(boundarySize);
     vecTangles.reserve(vecTanglesSize);
-    long long matLCCobosSize = vecTanglesSize ? vecTanglesSize - 1 : 0;
+    word64 matLCCobosSize = vecTanglesSize ? W64LIT(vecTanglesSize - 1) : W64LIT(0);
     matLCCobos.reserve(matLCCobosSize);
-    for (long long i = 0; i < (long long)vecTanglesSize; ++i)
+    for (word64 i = W64LIT(0); i < (word64)vecTanglesSize; ++i)
         vecTangles.emplace_back(f, boundarySize);
-    for (long long i = 0; i < matLCCobosSize; ++i)
+    for (word64 i = W64LIT(0); i < matLCCobosSize; ++i)
         matLCCobos.emplace_back(f, coefficientRing == 0);
     assert(isSane());
 }
@@ -215,7 +215,7 @@ void VecTangles<tangle_tpl>::writeToBin(std::ofstream &f) const {
             i != tangles.end(); ++i)
         i->writeToBin(f);
     writeToBinTpl(f, (uint64_t)deloopStack.size());
-    for (long long i = 0; i < (long long)deloopStack.size(); ++i)
+    for (word64 i = W64LIT(0); i < (word64)deloopStack.size(); ++i)
         writeToBinTpl(f, deloopStack.at(i));
 }
 
@@ -300,7 +300,7 @@ bool MatLCCobos<cobordism_tpl>::multIsNonZero(const MatLCCobos<cobordism_tpl>
 
 template <class tangle_tpl>
 bool VecTangles<tangle_tpl>::isSane(const Boundary *b) const {
-    long long countDeloopables = 0;
+    word64 countDeloopables = W64LIT(0);
     for (typename tangleCont_t::const_iterator i = tangles.begin();
             i != tangles.end(); ++i) {
         if (! i->isSane(b))
@@ -308,7 +308,7 @@ bool VecTangles<tangle_tpl>::isSane(const Boundary *b) const {
         if (i->hasLoop())
             countDeloopables += 1;
     }
-    for (std::vector<long long>::const_iterator i = deloopStack.begin();
+    for (std::vector<word64>::const_iterator i = deloopStack.begin();
             i != deloopStack.end(); ++i)
         if (! tangles.at(*i).hasLoop()) {
 	    insane();
@@ -375,7 +375,7 @@ bool LCCobos<cobordism_tpl>::isSane(const Boundary *b, const tangle_t *domain,
 #endif
 
 template <class cobordism_tpl>
-void MatLCCobos<cobordism_tpl>::deloop(long long idx, int copies,
+void MatLCCobos<cobordism_tpl>::deloop(word64 idx, int copies,
         const tangleCont_t &lowerTangles, const tangleCont_t &upperTangles,
         bool left) {
 
@@ -539,8 +539,8 @@ bool Complex<cobordism_tpl>::tryToGauss(int i, int qDiff, int numThreads) {
 
 template <class cobordism_tpl>
 bool Complex<cobordism_tpl>::tryToDeloop(int i) {
-    long long idx;
-    const long long oldSize = vecTangles.at(i).size();
+    word64 idx;
+    const word64 oldSize = W64LIT(vecTangles.at(i).size());
     if ((idx = vecTangles.at(i).simplifyOnce()) != -1) {
         const int copies = vecTangles.at(i).size() - oldSize;
         if (i > 0)
@@ -805,12 +805,12 @@ bool VecTangles<tangle_tpl>::deloopingDone() const {
 }
 
 template <class tangle_tpl>
-long long VecTangles<tangle_tpl>::simplifyOnce() {
+word64 VecTangles<tangle_tpl>::simplifyOnce() {
     assert(isSane());
     if (deloopStack.empty())
         return -1;
 
-    long long criticalIndex = deloopStack.back();
+    word64 criticalIndex = W64LIT(deloopStack.back());
     deloopStack.resize(deloopStack.size() - 1);
     tangle_tpl &criticalTangle = tangles.at(criticalIndex);
 
@@ -819,7 +819,7 @@ long long VecTangles<tangle_tpl>::simplifyOnce() {
 
     if (criticalTangle.hasLoop())
         deloopStack.push_back(criticalIndex);
-    for (long long i = 0; i < (int)newCopies.size(); ++i)
+    for (word64 i = W64LIT(0); i < (int)newCopies.size(); ++i)
         if (newCopies.at(i).hasLoop())
             deloopStack.push_back(tangles.size() - newCopies.size() + i);
 
@@ -937,19 +937,19 @@ Complex<cobordism_tpl>::Complex(const Complex<cobordism_tpl> &cc1,
         const Complex<cobordism_tpl> &cc2) :
     globalTShift(cc1.globalTShift + cc2.globalTShift) {
 
-    const long long size1 = cc1.vecTangles.size();
-    const long long size2 = cc2.vecTangles.size();
+    const word64 size1 = W64LIT(cc1.vecTangles.size());
+    const word64 size2 = W64LIT(cc2.vecTangles.size());
 
     // s is the sum, i is the first index.
     matLCCobos.resize(size1 + size2 - 2);
-    for (long long s = 1; s + 1 < (int)(size1 + size2); ++s) {
+    for (word64 s = W64LIT(1); s + 1 < (int)(size1 + size2); ++s) {
         MatLCCobos<cobordism_tpl> &m = matLCCobos.at(s - 1);
-        long long colShift = 0;
+        word64 colShift = W64LIT(0);
 
-        const long long forBegin = std::max(0ll, s - size2 + 1);
-        const long long forEnd = std::min(size1 - 1, s);
-        for (long long i = forBegin; i <= forEnd; ++i) {
-            const long long j = s - i;
+        const word64 forBegin = std::max(W64LIT(0ll), W64LIT(s - size2 + 1));
+        const word64 forEnd = std::min(W64LIT(size1 - 1), W64LIT(s));
+        for (word64 i = forBegin; i <= forEnd; ++i) {
+            const word64 j = W64LIT(s - i);
             const VecTangles<typename cobordism_tpl::tangle_t> *domainVecs[2] =
             { i ? &(cc1.vecTangles.at(i - 1)) : nullptr,
                 j ? &(cc2.vecTangles.at(j - 1)) : nullptr };
@@ -966,8 +966,8 @@ Complex<cobordism_tpl>::Complex(const Complex<cobordism_tpl> &cc1,
 
     boundary.setToSum(cc1.boundary, cc2.boundary);
     vecTangles.resize(size1 + size2 - 1);
-    for (long long i = 0; i < size1; ++i)
-        for (long long j = 0; j < size2; ++j)
+    for (word64 i = W64LIT(0); i < size1; ++i)
+        for (word64 j = W64LIT(0); j < size2; ++j)
             vecTangles.at(i + j).appendTensorProduct(
                     cc1.vecTangles.at(i), cc2.vecTangles.at(j));
 

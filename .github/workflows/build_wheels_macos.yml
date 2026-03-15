@@ -1,0 +1,41 @@
+name: Build wheels MacOS
+
+on:
+  push:
+    tags:
+      - "*" # Push events of new tags
+  workflow_dispatch:
+    # Allow to run manually
+
+jobs:
+  build_wheels:
+    uses: ./.github/workflows/build_wheels.yml
+    with:
+      operating-systems: >-
+        ["macos"]
+      system-versions: >-
+        ["13", "14"]
+
+  pypi-publish:
+    # https://github.com/pypa/gh-action-pypi-publish
+    name: Upload wheels to PyPI
+    needs: build_wheels
+    runs-on: ubuntu-latest
+    env:
+      CAN_DEPLOY: ${{ secrets.PYPI_TOCKEN_KHOCA != '' }}
+    steps:
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels*
+          path: wheelhouse
+          merge-multiple: true
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN_KHOCA }}
+          packages_dir: wheelhouse/
+          skip_existing: true
+          verbose: true
