@@ -14,7 +14,7 @@ jobs:
       operating-systems: >-
         ["macos"]
       system-versions: >-
-        ["13", "14"]
+        ["14", "15"]
 
   pypi-publish:
     # https://github.com/pypa/gh-action-pypi-publish
