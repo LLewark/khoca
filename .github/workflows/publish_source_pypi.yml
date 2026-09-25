@@ -1,6 +1,9 @@
 name: Publish sources to PyPI
 
 on:
+  push:
+    tags:
+      - "*" # Push events of new tags
   workflow_dispatch:
 
 jobs:
