@@ -4,7 +4,7 @@
 set -e
 
 if [ "$PARI_VERSION" = "" ]; then
-    PARI_VERSION="pari-2.17.1"
+    PARI_VERSION="pari-2.17.4"
 fi
 
 if [ "$1" = "" ]; then
