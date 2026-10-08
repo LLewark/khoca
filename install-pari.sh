@@ -13,7 +13,7 @@ else
     PREFIX=$1
 fi
 
-PARI_URL="http://pari.math.u-bordeaux.fr/pub/pari/unix"
+PARI_URL="https://pari.math.u-bordeaux.fr/pub/pari/unix"
 
 # Download PARI sources
 curl --no-verbose "$PARI_URL/$PARI_VERSION.tar.gz" -o pari.tgz
