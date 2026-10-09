@@ -4,7 +4,7 @@
 set -e
 
 if [ "$PARI_VERSION" = "" ]; then
-    PARI_VERSION="pari-2.17.1"
+    PARI_VERSION="pari-2.17.4"
 fi
 
 if [ "$1" = "" ]; then
@@ -13,7 +13,7 @@ else
     PREFIX=$1
 fi
 
-PARI_URL="http://pari.math.u-bordeaux.fr/pub/pari/unix"
+PARI_URL="https://pari.math.u-bordeaux.fr/pub/pari/unix"
 
 # Download PARI sources
 curl --no-verbose "$PARI_URL/$PARI_VERSION.tar.gz" -o pari.tgz

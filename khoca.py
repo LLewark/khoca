@@ -80,21 +80,57 @@ NUM_THREADS = 1 if debugging else 12
 # @param pd A list of lists of four integers each, such as [[0,1,2,3],[1,4,5,2],[4,0,3,5] for the positive trefoil.
 # @return That link diagram in mypd-notation, type "0" for positive, type "1" for negative crossings.
 def pd_to_mypd(pd):
+    undercrossing_pairs = [(cr[0], cr[2]) for cr in pd]
+    consecutive_pairs = list(undercrossing_pairs)
+    crossing_signs = dict()
+
+    for i in pd:
+        # First we consider the consecutive over-crossing edges and orient them
+        # ascending. During that we complete the list of consecutive pairs.
+        a, b, c, d = i
+        t = tuple(i)
+        if abs(d - b) == 1:
+            if d == b + 1:
+                if (b, d) in undercrossing_pairs:
+                    # looping end in two-edge trivial component
+                    crossing_signs[t] = 1
+                else:
+                    crossing_signs[t] = -1
+                    consecutive_pairs += [(b, d)]
+            else:
+                if (d, b) in undercrossing_pairs:
+                    # looping end in two-edge trivial component
+                    crossing_signs[t] = -1
+                else:
+                    crossing_signs[t] = 1
+                    consecutive_pairs += [(d, b)]
+
+    for i in pd:
+        # Now we consider over-crossing edges that form the looping end of a
+        # component in a link diagram which means they should be oriented
+        # descending.
+        a, b, c, d = i
+        t = tuple(i)
+        if abs(d - b) != 1:
+            if d < b:
+                if (d, d + 1) in consecutive_pairs:
+                    crossing_signs[t] = -1
+                else:
+                    raise ValueError('Invalid PD-Code! Components must be labeled by consecutive numbers (violation %s -> %s).' % (d + 1, b + 1))
+            else:
+                if (b, b + 1) in consecutive_pairs:
+                    crossing_signs[t] = 1
+                else:
+                    raise ValueError('Invalid PD-Code! Components must be labeled by consecutive numbers (violation %s -> %s).' % (b + 1, d + 1))
+
     result = list()
     for i in pd:
-        # If they are consecutive, we orient them ascending.
-        if abs(i[3] - i[1]) == 1:
-            if i[3] == i[1] + 1:
-                result.append([2,i[0] - 1,i[1] - 1,i[2] - 1,i[3] - 1])
-            else:
-                result.append([3,i[1] - 1,i[2] - 1,i[3] - 1,i[0] - 1])
-        # Now we have to assume that they form the looping end of a component in a link diagram.
-        # Which means they should be oriented descending.
+        a, b, c, d = i
+        if crossing_signs[tuple(i)] == 1:
+            result.append([3, b - 1, c - 1, d - 1, a - 1])
         else:
-            if i[3] < i[1]:
-                result.append([2,i[0] - 1,i[1] - 1,i[2] - 1,i[3] - 1])
-            else:
-                result.append([3,i[1] - 1,i[2] - 1,i[3] - 1,i[0] - 1])
+            result.append([2, a - 1, b - 1, c - 1, d - 1])
+
     return result
 
 def generate_binary_tree(length, s = 0):

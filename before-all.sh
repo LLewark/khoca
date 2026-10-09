@@ -13,7 +13,7 @@ if [[ $CIBW_PLATFORM == "Linux" ]]; then
     echo "platform is Linux."
     if [[ $CIBW_BUILD == *"manylinux"* ]]; then
         echo "building manylinux"
-        yum -q update && yum -q -y install gmp-devel
+        yum -q -y install gmp-devel
     else
         echo "building musllinux"
         apk add gmp-dev
